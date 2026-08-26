@@ -8,7 +8,7 @@ number that links to the next player, and play continues from there
 ## Games
 
 - **Player Connections** (`/games/connections`)
-  - **Vs. Computer**: play until you or the computer runs out of valid
+  - **Solo Endless**: play until you or the computer runs out of valid
     connections. Your longest streak is saved as a personal best (per
     browser, via `localStorage`).
   - **1v1 Online**: create a room, share the code with a friend, and take
@@ -20,7 +20,7 @@ More games can be added under `src/app/games/<slug>` and listed in
 ## Player database
 
 The player database is fully built into the app — no external service is
-needed to play offline/vs-computer. It lives in `src/data/players.ts` as a
+needed to play Solo Endless offline. It lives in `src/data/players.ts` as a
 plain TypeScript array (name, colleges, teams, every jersey number worn).
 Add more players by appending to that array; the game engine
 (`src/lib/connections.ts`) automatically finds valid links between any two

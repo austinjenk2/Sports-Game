@@ -19,7 +19,7 @@ export default function ConnectionsHome() {
           href="/games/connections/cpu"
           className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:border-emerald-400 hover:bg-white/10"
         >
-          <h2 className="text-xl font-semibold">Vs. Computer</h2>
+          <h2 className="text-xl font-semibold">Solo Endless</h2>
           <p className="mt-2 text-sm text-white/60">
             See how long you can keep the chain going. Try to beat your personal best.
           </p>

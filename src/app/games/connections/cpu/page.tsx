@@ -11,7 +11,7 @@ import {
 } from "@/lib/connections";
 import PlayerPicker from "@/components/PlayerPicker";
 
-const BEST_KEY = "connections:vsComputer:personalBest";
+const BEST_KEY = "connections:soloEndless:personalBest";
 
 interface ChainEntry {
   player: Player;
@@ -21,7 +21,7 @@ interface ChainEntry {
 
 type Status = "picking-start" | "computer-thinking" | "awaiting-guess" | "game-over";
 
-export default function VsComputerPage() {
+export default function SoloEndlessPage() {
   const [chain, setChain] = useState<ChainEntry[]>([]);
   const [pendingLink, setPendingLink] = useState<GameLink | null>(null);
   const [status, setStatus] = useState<Status>("picking-start");
@@ -95,7 +95,7 @@ export default function VsComputerPage() {
         <Link href="/games/connections" className="text-sm text-white/50 hover:text-white">
           ← Back
         </Link>
-        <h1 className="mt-3 text-3xl font-bold">Vs. Computer</h1>
+        <h1 className="mt-3 text-3xl font-bold">Solo Endless</h1>
       </div>
 
       <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm">
