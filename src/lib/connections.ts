@@ -45,6 +45,45 @@ export function pickComputerMove(current: Player, exclude: Set<string>): Player 
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
+/** Every distinct college/team/number attribute a player has. */
+export function allLinksOf(player: Player): Link[] {
+  const links: Link[] = [];
+  for (const college of player.colleges) links.push({ type: "college", value: college });
+  for (const team of player.teams) links.push({ type: "team", value: team });
+  for (const num of player.numbers) links.push({ type: "number", value: String(num) });
+  return links;
+}
+
+/** Does `player` actually have this attribute (college/team/number)? */
+export function playerHasLink(player: Player, link: Link): boolean {
+  const norm = link.value.trim().toLowerCase();
+  if (link.type === "college") return player.colleges.some((c) => c.toLowerCase() === norm);
+  if (link.type === "team") return player.teams.some((t) => t.toLowerCase() === norm);
+  return player.numbers.some((n) => String(n) === norm);
+}
+
+/** Other players (excluding ids in `exclude`) that have this attribute. */
+export function playersWithLink(link: Link, exclude: Set<string>): Player[] {
+  return players.filter((p) => !exclude.has(p.id) && playerHasLink(p, link));
+}
+
+/**
+ * Pick a random attribute of `current` that at least one other unused player also has.
+ * This is what the computer "says" — the human must then name a player who matches it.
+ */
+export function pickComputerLink(current: Player, exclude: Set<string>): Link | null {
+  const candidates = allLinksOf(current).filter(
+    (link) => playersWithLink(link, exclude).length > 0
+  );
+  if (candidates.length === 0) return null;
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+/** Does `player` satisfy the announced link, and is it a fresh (unused) player? */
+export function isValidGuess(link: Link, player: Player, exclude: Set<string>): boolean {
+  return !exclude.has(player.id) && playerHasLink(player, link);
+}
+
 export function formatLink(link: Link): string {
   if (link.type === "number") return `wore #${link.value}`;
   if (link.type === "college") return `played at ${link.value}`;

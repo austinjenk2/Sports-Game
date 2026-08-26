@@ -3,21 +3,27 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Player } from "@/data/players";
-import { Link as GameLink, formatLink, pickComputerMove, sharedLinks } from "@/lib/connections";
+import {
+  Link as GameLink,
+  formatLink,
+  isValidGuess,
+  pickComputerLink,
+} from "@/lib/connections";
 import PlayerPicker from "@/components/PlayerPicker";
 
 const BEST_KEY = "connections:vsComputer:personalBest";
 
 interface ChainEntry {
   player: Player;
-  by: "you" | "computer" | "start";
-  link?: GameLink;
+  /** The attribute the computer announced that led to this player being named (null for the starting player). */
+  link: GameLink | null;
 }
 
-type Status = "picking-start" | "your-turn" | "computer-thinking" | "game-over";
+type Status = "picking-start" | "computer-thinking" | "awaiting-guess" | "game-over";
 
 export default function VsComputerPage() {
   const [chain, setChain] = useState<ChainEntry[]>([]);
+  const [pendingLink, setPendingLink] = useState<GameLink | null>(null);
   const [status, setStatus] = useState<Status>("picking-start");
   const [message, setMessage] = useState<string>("Name the first player to start the chain.");
   const [best, setBest] = useState<number>(() => {
@@ -32,6 +38,7 @@ export default function VsComputerPage() {
   function endGame(finalMessage: string) {
     setStatus("game-over");
     setMessage(finalMessage);
+    setPendingLink(null);
     if (score > best) {
       setBest(score);
       localStorage.setItem(BEST_KEY, String(score));
@@ -39,38 +46,37 @@ export default function VsComputerPage() {
   }
 
   function startChain(player: Player) {
-    setChain([{ player, by: "start" }]);
+    setChain([{ player, link: null }]);
     setStatus("computer-thinking");
     setMessage(`You started with ${player.name}. Computer is thinking...`);
   }
 
-  function handleYourPick(player: Player) {
-    const last = chain[chain.length - 1].player;
-    const links = sharedLinks(last, player);
-    if (links.length === 0) {
-      endGame(`No connection between ${last.name} and ${player.name}. Game over!`);
+  function handleGuess(player: Player) {
+    if (!pendingLink) return;
+    if (!isValidGuess(pendingLink, player, usedIds)) {
+      endGame(
+        `${player.name} doesn't match: ${formatLink(pendingLink)}. Game over!`
+      );
       return;
     }
-    const link = links[0];
-    const nextChain = [...chain, { player, by: "you" as const, link }];
-    setChain(nextChain);
+    setChain((c) => [...c, { player, link: pendingLink }]);
+    setPendingLink(null);
     setStatus("computer-thinking");
-    setMessage(`You linked via ${formatLink(link)}. Computer is thinking...`);
+    setMessage(`You said ${player.name}. Computer is thinking...`);
   }
 
   useEffect(() => {
     if (status !== "computer-thinking" || chain.length === 0) return;
     const last = chain[chain.length - 1].player;
     const timer = setTimeout(() => {
-      const move = pickComputerMove(last, usedIds);
-      if (!move) {
+      const link = pickComputerLink(last, usedIds);
+      if (!link) {
         endGame(`Computer couldn't find another connection from ${last.name}. You win this round!`);
         return;
       }
-      const link = sharedLinks(last, move)[0];
-      setChain((c) => [...c, { player: move, by: "computer", link }]);
-      setStatus("your-turn");
-      setMessage(`Computer said ${move.name} (${formatLink(link)}). Your turn.`);
+      setPendingLink(link);
+      setStatus("awaiting-guess");
+      setMessage(`Computer says: ${last.name} ${formatLink(link)}. Name a player who also ${formatLink(link)}.`);
     }, 700);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,6 +84,7 @@ export default function VsComputerPage() {
 
   function reset() {
     setChain([]);
+    setPendingLink(null);
     setStatus("picking-start");
     setMessage("Name the first player to start the chain.");
   }
@@ -102,13 +109,12 @@ export default function VsComputerPage() {
 
       <p className="min-h-6 text-white/70">{message}</p>
 
-      {status !== "game-over" && (
+      {(status === "picking-start" || status === "awaiting-guess") && (
         <PlayerPicker
-          onPick={status === "picking-start" ? startChain : handleYourPick}
-          disabled={status === "computer-thinking"}
+          onPick={status === "picking-start" ? startChain : handleGuess}
           excludeIds={usedIds}
           placeholder={
-            status === "picking-start" ? "Search a player to start..." : "Search your next player..."
+            status === "picking-start" ? "Search a player to start..." : "Search a matching player..."
           }
         />
       )}
@@ -131,12 +137,7 @@ export default function VsComputerPage() {
             <span>
               {chain.length - idx}. {entry.player.name}
             </span>
-            {entry.link && (
-              <span className="text-xs text-white/50">{formatLink(entry.link)}</span>
-            )}
-            <span className="text-xs uppercase tracking-wide text-white/30">
-              {entry.by === "you" ? "You" : entry.by === "computer" ? "CPU" : "Start"}
-            </span>
+            {entry.link && <span className="text-xs text-white/50">{formatLink(entry.link)}</span>}
           </li>
         ))}
       </ol>
