@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { Player } from "@/lib/players-db";
+import { useSearchParams } from "next/navigation";
+import { Player, PlayerPool } from "@/lib/players-db";
 import {
   Link as GameLink,
   formatLink,
@@ -28,6 +29,15 @@ const linkBadgeClass: Record<GameLink["type"], string> = {
 };
 
 export default function SoloEndlessPage() {
+  return (
+    <Suspense>
+      <SoloEndlessGame />
+    </Suspense>
+  );
+}
+
+function SoloEndlessGame() {
+  const pool: PlayerPool = useSearchParams().get("pool") === "current" ? "current" : "all-time";
   const [chain, setChain] = useState<ChainEntry[]>([]);
   const [pendingLink, setPendingLink] = useState<GameLink | null>(null);
   const [status, setStatus] = useState<Status>("picking-start");
@@ -76,7 +86,7 @@ export default function SoloEndlessPage() {
     const last = chain[chain.length - 1];
     let cancelled = false;
     const timer = setTimeout(async () => {
-      const link = await pickComputerLink(last.player, usedIds, last.link?.type);
+      const link = await pickComputerLink(last.player, usedIds, pool, last.link?.type);
       if (cancelled) return;
       if (!link) {
         endGame(`Computer couldn't find another connection from ${last.player.name}. You win this round!`, "win");
@@ -91,7 +101,7 @@ export default function SoloEndlessPage() {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, chain]);
+  }, [status, chain, pool]);
 
   function reset() {
     setChain([]);
@@ -109,7 +119,7 @@ export default function SoloEndlessPage() {
             ← Back
           </Link>
           <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-gold uppercase">
-            Sports Game Hub &middot; The Sports Game
+            Sports Game Hub &middot; The Sports Game &middot; {pool === "current" ? "Current Players" : "All-Time"}
           </p>
           <h1 className="font-display text-5xl font-black italic">Solo Endless</h1>
           <p className="mt-3 max-w-xl font-eyebrow text-lg text-[#cfd6e4]">
@@ -159,6 +169,7 @@ export default function SoloEndlessPage() {
             <PlayerPicker
               onPick={status === "picking-start" ? startChain : handleGuess}
               excludeIds={usedIds}
+              pool={pool}
               placeholder={
                 status === "picking-start" ? "Search a player to start..." : "Search a matching player..."
               }

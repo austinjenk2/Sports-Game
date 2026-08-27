@@ -1,4 +1,4 @@
-import type { Player } from "@/lib/players-db";
+import type { Player, PlayerPool } from "@/lib/players-db";
 import { anyOtherPlayerHasLink } from "@/lib/players-db";
 
 export type LinkType = "college" | "team" | "number";
@@ -62,20 +62,21 @@ export function playerHasLink(player: Player, link: Link): boolean {
 export async function pickComputerLink(
   current: Player,
   exclude: Set<string>,
+  pool: PlayerPool,
   avoidType?: LinkType
 ): Promise<Link | null> {
   const links = allLinksOf(current);
   const viable = await Promise.all(
     links.map(async (link) => ({
       link,
-      ok: await anyOtherPlayerHasLink(link.type, link.value, exclude),
+      ok: await anyOtherPlayerHasLink(link.type, link.value, exclude, pool),
     }))
   );
   const candidates = viable.filter((v) => v.ok).map((v) => v.link);
   if (candidates.length === 0) return null;
   const preferred = avoidType ? candidates.filter((link) => link.type !== avoidType) : candidates;
-  const pool = preferred.length > 0 ? preferred : candidates;
-  return pool[Math.floor(Math.random() * pool.length)];
+  const finalPool = preferred.length > 0 ? preferred : candidates;
+  return finalPool[Math.floor(Math.random() * finalPool.length)];
 }
 
 /** Does `player` satisfy the announced link, and is it a fresh (unused) player? */

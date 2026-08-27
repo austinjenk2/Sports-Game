@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { getPlayerById, Player } from "@/lib/players-db";
+import { useSearchParams } from "next/navigation";
+import { getPlayerById, Player, PlayerPool } from "@/lib/players-db";
 import { formatLink, sharedLinks } from "@/lib/connections";
 import { generateRoomCode } from "@/lib/room-code";
 import { isOnlineModeConfigured, supabase } from "@/lib/supabase";
@@ -31,6 +32,15 @@ interface MoveRow {
 }
 
 export default function OnlinePage() {
+  return (
+    <Suspense>
+      <OnlineGame />
+    </Suspense>
+  );
+}
+
+function OnlineGame() {
+  const pool: PlayerPool = useSearchParams().get("pool") === "current" ? "current" : "all-time";
   const [name, setName] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [role, setRole] = useState<Role | null>(null);
@@ -193,7 +203,7 @@ export default function OnlinePage() {
           ← Back
         </Link>
         <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-gold uppercase">
-          Sports Game Hub &middot; The Sports Game
+          Sports Game Hub &middot; The Sports Game &middot; {pool === "current" ? "Current Players" : "All-Time"}
         </p>
         <h1 className="font-display text-5xl font-black italic">1v1 Online</h1>
       </div>
@@ -301,6 +311,7 @@ export default function OnlinePage() {
               <PlayerPicker
                 onPick={submitMove}
                 excludeIds={usedIds}
+                pool={pool}
                 placeholder={lastPlayer ? "Search your next player..." : "Search a player to start..."}
               />
             )}

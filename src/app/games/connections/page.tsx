@@ -1,6 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import type { PlayerPool } from "@/lib/players-db";
 
 export default function ConnectionsHome() {
+  const [pool, setPool] = useState<PlayerPool>("all-time");
+  const suffix = pool === "current" ? "?pool=current" : "";
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b-4 border-gold bg-gradient-to-br from-navy to-navy-deep px-6 py-10 text-white">
@@ -20,9 +27,40 @@ export default function ConnectionsHome() {
       </header>
 
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-10">
+        <div className="mb-6">
+          <p className="mb-2 font-eyebrow text-xs font-semibold tracking-[0.14em] text-ink-faint uppercase">
+            Player pool
+          </p>
+          <div className="inline-flex border-2 border-ink">
+            <button
+              type="button"
+              onClick={() => setPool("all-time")}
+              className={`px-4 py-2 font-eyebrow text-sm font-bold tracking-wide uppercase ${
+                pool === "all-time" ? "bg-navy text-white" : "bg-paper-2 text-ink hover:bg-navy-tint"
+              }`}
+            >
+              All-Time
+            </button>
+            <button
+              type="button"
+              onClick={() => setPool("current")}
+              className={`border-l-2 border-ink px-4 py-2 font-eyebrow text-sm font-bold tracking-wide uppercase ${
+                pool === "current" ? "bg-navy text-white" : "bg-paper-2 text-ink hover:bg-navy-tint"
+              }`}
+            >
+              Current Players
+            </button>
+          </div>
+          <p className="mt-2 font-body text-sm text-ink-dim">
+            {pool === "current"
+              ? "Only players on an active roster or who played in 2025 or later."
+              : "Every Super Bowl-era NFL player, 1966 to today."}
+          </p>
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <Link
-            href="/games/connections/cpu"
+            href={`/games/connections/cpu${suffix}`}
             className="relative border-2 border-ink bg-paper-2 p-6 transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--red)]"
           >
             <span className="absolute top-[-2px] left-[-2px] right-[-2px] h-[5px] bg-red" />
@@ -32,7 +70,7 @@ export default function ConnectionsHome() {
             </p>
           </Link>
           <Link
-            href="/games/connections/online"
+            href={`/games/connections/online${suffix}`}
             className="relative border-2 border-ink bg-paper-2 p-6 transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--navy)]"
           >
             <span className="absolute top-[-2px] left-[-2px] right-[-2px] h-[5px] bg-gold" />

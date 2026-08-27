@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Player, searchPlayersByName } from "@/lib/players-db";
+import { Player, PlayerPool, searchPlayersByName } from "@/lib/players-db";
 
 function playerYears(p: Player): string | null {
   if (!p.first_season) return null;
@@ -14,6 +14,7 @@ interface PlayerPickerProps {
   placeholder?: string;
   disabled?: boolean;
   excludeIds?: Set<string>;
+  pool: PlayerPool;
 }
 
 export default function PlayerPicker({
@@ -21,6 +22,7 @@ export default function PlayerPicker({
   placeholder = "Search a player...",
   disabled,
   excludeIds,
+  pool,
 }: PlayerPickerProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Player[]>([]);
@@ -30,7 +32,7 @@ export default function PlayerPicker({
     if (!q) return;
     let cancelled = false;
     const timer = setTimeout(async () => {
-      const matches = await searchPlayersByName(q, 16);
+      const matches = await searchPlayersByName(q, pool, 16);
       if (cancelled) return;
       const filtered = excludeIds ? matches.filter((p) => !excludeIds.has(p.id)) : matches;
       setResults(filtered.slice(0, 8));
@@ -39,7 +41,7 @@ export default function PlayerPicker({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [query, excludeIds]);
+  }, [query, excludeIds, pool]);
 
   return (
     <div className="relative w-full">
