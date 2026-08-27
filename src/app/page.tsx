@@ -3,7 +3,7 @@ import Link from "next/link";
 const games = [
   {
     slug: "connections",
-    name: "Player Connections",
+    name: "The Sports Game",
     description:
       "Name a player, then link to the next one through a shared college, team, or jersey number. Keep the chain alive as long as you can.",
     available: true,

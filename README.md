@@ -1,13 +1,13 @@
 # Sports Game Hub
 
-A hub for sports trivia / connection games, starting with **Player Connections**:
+A hub for sports trivia / connection games, starting with **The Sports Game**:
 Player 1 names a player. Player 2 responds with a college, team, or jersey
 number that links to the next player, and play continues from there
 (e.g. "DeVonta Smith" → "Alabama" → "Jaylen Waddle" → "Miami Dolphins" → ...).
 
 ## Games
 
-- **Player Connections** (`/games/connections`)
+- **The Sports Game** (`/games/connections`)
   - **Solo Endless**: play until you or the computer runs out of valid
     connections. Your longest streak is saved as a personal best (per
     browser, via `localStorage`).

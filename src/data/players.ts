@@ -1,4 +1,4 @@
-// Built-in player database for the "Player Connections" game.
+// Built-in player database for the "The Sports Game" game.
 // Every entry is bundled with the app — no external service required to play.
 // Numbers are every jersey number a player is known to have worn across their
 // career (college + pro), teams are every team they've played for, and

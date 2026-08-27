@@ -104,7 +104,7 @@ export default function SoloEndlessPage() {
             ← Back
           </Link>
           <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-gold uppercase">
-            Sports Game Hub &middot; Player Connections
+            Sports Game Hub &middot; The Sports Game
           </p>
           <h1 className="font-display text-5xl font-black italic">Solo Endless</h1>
           <p className="mt-3 max-w-xl font-eyebrow text-lg text-[#cfd6e4]">

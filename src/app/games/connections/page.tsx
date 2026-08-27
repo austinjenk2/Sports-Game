@@ -11,7 +11,7 @@ export default function ConnectionsHome() {
           <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-gold uppercase">
             Sports Game Hub
           </p>
-          <h1 className="mt-1 font-display text-5xl font-black italic">Player Connections</h1>
+          <h1 className="mt-1 font-display text-5xl font-black italic">The Sports Game</h1>
           <p className="mt-3 max-w-xl font-eyebrow text-lg text-[#cfd6e4]">
             Player 1 names a player. Player 2 responds with a college, team, or jersey number that
             connects to the next player. Keep going until someone can&apos;t continue the chain.
