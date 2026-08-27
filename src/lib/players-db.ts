@@ -6,9 +6,11 @@ export interface Player {
   colleges: string[];
   teams: string[];
   numbers: number[];
+  first_season: number | null;
+  last_season: number | null;
 }
 
-const SELECT_COLUMNS = "id,name,colleges,teams,numbers";
+const SELECT_COLUMNS = "id,name,colleges,teams,numbers,first_season,last_season";
 
 export async function getPlayerById(id: string): Promise<Player | null> {
   if (!supabase) return null;
@@ -29,6 +31,7 @@ export async function searchPlayersByName(query: string, limit = 8): Promise<Pla
     .select(SELECT_COLUMNS)
     .ilike("name", `%${q}%`)
     .order("name", { ascending: true })
+    .order("last_season", { ascending: false, nullsFirst: false })
     .limit(limit);
   if (error || !data) return [];
   return data as Player[];

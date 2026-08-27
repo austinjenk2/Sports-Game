@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import { Player, searchPlayersByName } from "@/lib/players-db";
 
+function playerYears(p: Player): string | null {
+  if (!p.first_season) return null;
+  const last = p.last_season ?? p.first_season;
+  return p.first_season === last ? String(p.first_season) : `${p.first_season}–${last}`;
+}
+
 interface PlayerPickerProps {
   onPick: (player: Player) => void;
   placeholder?: string;
@@ -51,13 +57,18 @@ export default function PlayerPicker({
             <li key={p.id}>
               <button
                 type="button"
-                className="block w-full px-4 py-2.5 text-left font-body text-[15.5px] hover:bg-navy-tint"
+                className="flex w-full items-baseline justify-between gap-3 px-4 py-2.5 text-left font-body text-[15.5px] hover:bg-navy-tint"
                 onClick={() => {
                   onPick(p);
                   setQuery("");
                 }}
               >
-                {p.name}
+                <span>{p.name}</span>
+                {playerYears(p) && (
+                  <span className="flex-none font-eyebrow text-[12.5px] text-ink-faint tabular-nums">
+                    {playerYears(p)}
+                  </span>
+                )}
               </button>
             </li>
           ))}
