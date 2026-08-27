@@ -73,16 +73,16 @@ export default function SoloEndlessPage() {
 
   useEffect(() => {
     if (status !== "computer-thinking" || chain.length === 0) return;
-    const last = chain[chain.length - 1].player;
+    const last = chain[chain.length - 1];
     const timer = setTimeout(() => {
-      const link = pickComputerLink(last, usedIds);
+      const link = pickComputerLink(last.player, usedIds, last.link?.type);
       if (!link) {
-        endGame(`Computer couldn't find another connection from ${last.name}. You win this round!`, "win");
+        endGame(`Computer couldn't find another connection from ${last.player.name}. You win this round!`, "win");
         return;
       }
       setPendingLink(link);
       setStatus("awaiting-guess");
-      setMessage(`Computer says: ${last.name} ${formatLink(link)}. Name a player who also ${formatLink(link)}.`);
+      setMessage(`Computer says: ${last.player.name} ${formatLink(link)}. Name a player who also ${formatLink(link)}.`);
     }, 700);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps

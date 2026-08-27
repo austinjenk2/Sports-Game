@@ -70,13 +70,23 @@ export function playersWithLink(link: Link, exclude: Set<string>): Player[] {
 /**
  * Pick a random attribute of `current` that at least one other unused player also has.
  * This is what the computer "says" — the human must then name a player who matches it.
+ *
+ * `avoidType`, when given, keeps the computer from using the same kind of link
+ * (college/team/number) two turns in a row — it's only used as a fallback if
+ * every valid link happens to be that type.
  */
-export function pickComputerLink(current: Player, exclude: Set<string>): Link | null {
+export function pickComputerLink(
+  current: Player,
+  exclude: Set<string>,
+  avoidType?: LinkType
+): Link | null {
   const candidates = allLinksOf(current).filter(
     (link) => playersWithLink(link, exclude).length > 0
   );
   if (candidates.length === 0) return null;
-  return candidates[Math.floor(Math.random() * candidates.length)];
+  const preferred = avoidType ? candidates.filter((link) => link.type !== avoidType) : candidates;
+  const pool = preferred.length > 0 ? preferred : candidates;
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 /** Does `player` satisfy the announced link, and is it a fresh (unused) player? */
