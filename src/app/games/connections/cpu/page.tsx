@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Player } from "@/data/players";
+import { Player } from "@/lib/players-db";
 import {
   Link as GameLink,
   formatLink,
@@ -74,8 +74,10 @@ export default function SoloEndlessPage() {
   useEffect(() => {
     if (status !== "computer-thinking" || chain.length === 0) return;
     const last = chain[chain.length - 1];
-    const timer = setTimeout(() => {
-      const link = pickComputerLink(last.player, usedIds, last.link?.type);
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const link = await pickComputerLink(last.player, usedIds, last.link?.type);
+      if (cancelled) return;
       if (!link) {
         endGame(`Computer couldn't find another connection from ${last.player.name}. You win this round!`, "win");
         return;
@@ -84,7 +86,10 @@ export default function SoloEndlessPage() {
       setStatus("awaiting-guess");
       setMessage(`Computer says: ${last.player.name} ${formatLink(link)}. Name a player who also ${formatLink(link)}.`);
     }, 700);
-    return () => clearTimeout(timer);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, chain]);
 

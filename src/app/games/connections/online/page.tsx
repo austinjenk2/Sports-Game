@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { getPlayerById, Player } from "@/data/players";
+import { getPlayerById, Player } from "@/lib/players-db";
 import { formatLink, sharedLinks } from "@/lib/connections";
 import { generateRoomCode } from "@/lib/room-code";
 import { isOnlineModeConfigured, supabase } from "@/lib/supabase";
@@ -39,9 +39,22 @@ export default function OnlinePage() {
   const [error, setError] = useState<string | null>(null);
 
   const usedIds = useMemo(() => new Set(moves.map((m) => m.player_id)), [moves]);
-  const lastPlayer: Player | null = moves.length
-    ? getPlayerById(moves[moves.length - 1].player_id) ?? null
-    : null;
+  const [fetchedLastPlayer, setFetchedLastPlayer] = useState<Player | null>(null);
+  const lastMoveId = moves.length ? moves[moves.length - 1].player_id : null;
+  const lastPlayer =
+    lastMoveId && fetchedLastPlayer?.id === lastMoveId ? fetchedLastPlayer : null;
+
+  useEffect(() => {
+    if (!lastMoveId) return;
+    let cancelled = false;
+    void (async () => {
+      const player = await getPlayerById(lastMoveId);
+      if (!cancelled) setFetchedLastPlayer(player);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [lastMoveId]);
 
   // Subscribe to room + move updates once we have a room code.
   useEffect(() => {

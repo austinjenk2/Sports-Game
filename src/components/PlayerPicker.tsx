@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Player, findPlayersByName } from "@/data/players";
+import { useEffect, useState } from "react";
+import { Player, searchPlayersByName } from "@/lib/players-db";
 
 interface PlayerPickerProps {
   onPick: (player: Player) => void;
@@ -17,11 +17,22 @@ export default function PlayerPicker({
   excludeIds,
 }: PlayerPickerProps) {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Player[]>([]);
 
-  const results = useMemo(() => {
-    const matches = findPlayersByName(query);
-    const filtered = excludeIds ? matches.filter((p) => !excludeIds.has(p.id)) : matches;
-    return filtered.slice(0, 8);
+  useEffect(() => {
+    const q = query.trim();
+    if (!q) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const matches = await searchPlayersByName(q, 16);
+      if (cancelled) return;
+      const filtered = excludeIds ? matches.filter((p) => !excludeIds.has(p.id)) : matches;
+      setResults(filtered.slice(0, 8));
+    }, 200);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [query, excludeIds]);
 
   return (

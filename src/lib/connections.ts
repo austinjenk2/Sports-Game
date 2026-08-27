@@ -1,4 +1,5 @@
-import { Player, players } from "@/data/players";
+import type { Player } from "@/lib/players-db";
+import { anyOtherPlayerHasLink } from "@/lib/players-db";
 
 export type LinkType = "college" | "team" | "number";
 
@@ -33,18 +34,6 @@ export function isValidLink(a: Player, b: Player, type: LinkType, value: string)
   return links.some((l) => l.type === type && l.value.toLowerCase() === norm);
 }
 
-/** Every other player in the database linked to `player`, excluding ids in `exclude`. */
-export function linkedCandidates(player: Player, exclude: Set<string>): Player[] {
-  return players.filter((p) => !exclude.has(p.id) && playersAreLinked(player, p));
-}
-
-/** Pick a random computer move linked to the current player, or null if none remain. */
-export function pickComputerMove(current: Player, exclude: Set<string>): Player | null {
-  const candidates = linkedCandidates(current, exclude);
-  if (candidates.length === 0) return null;
-  return candidates[Math.floor(Math.random() * candidates.length)];
-}
-
 /** Every distinct college/team/number attribute a player has. */
 export function allLinksOf(player: Player): Link[] {
   const links: Link[] = [];
@@ -62,11 +51,6 @@ export function playerHasLink(player: Player, link: Link): boolean {
   return player.numbers.some((n) => String(n) === norm);
 }
 
-/** Other players (excluding ids in `exclude`) that have this attribute. */
-export function playersWithLink(link: Link, exclude: Set<string>): Player[] {
-  return players.filter((p) => !exclude.has(p.id) && playerHasLink(p, link));
-}
-
 /**
  * Pick a random attribute of `current` that at least one other unused player also has.
  * This is what the computer "says" — the human must then name a player who matches it.
@@ -75,14 +59,19 @@ export function playersWithLink(link: Link, exclude: Set<string>): Player[] {
  * (college/team/number) two turns in a row — it's only used as a fallback if
  * every valid link happens to be that type.
  */
-export function pickComputerLink(
+export async function pickComputerLink(
   current: Player,
   exclude: Set<string>,
   avoidType?: LinkType
-): Link | null {
-  const candidates = allLinksOf(current).filter(
-    (link) => playersWithLink(link, exclude).length > 0
+): Promise<Link | null> {
+  const links = allLinksOf(current);
+  const viable = await Promise.all(
+    links.map(async (link) => ({
+      link,
+      ok: await anyOtherPlayerHasLink(link.type, link.value, exclude),
+    }))
   );
+  const candidates = viable.filter((v) => v.ok).map((v) => v.link);
   if (candidates.length === 0) return null;
   const preferred = avoidType ? candidates.filter((link) => link.type !== avoidType) : candidates;
   const pool = preferred.length > 0 ? preferred : candidates;
