@@ -23,9 +23,9 @@ interface ChainEntry {
 type Status = "picking-start" | "computer-thinking" | "awaiting-guess" | "game-over";
 
 const linkBadgeClass: Record<GameLink["type"], string> = {
-  college: "bg-navy text-white",
-  team: "bg-red text-white",
-  number: "bg-gold text-[#201400]",
+  college: "bg-sky-tint text-sky",
+  team: "bg-crimson-tint text-[#f3b3ab]",
+  number: "bg-navy-tint text-cream",
 };
 
 export default function SoloEndlessPage() {
@@ -113,16 +113,16 @@ function SoloEndlessGame() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b-4 border-gold bg-gradient-to-br from-navy to-navy-deep px-6 py-8 text-white">
+      <header className="px-6 pt-10 pb-6">
         <div className="mx-auto max-w-2xl">
-          <Link href="/games/connections" className="font-eyebrow text-sm text-[#cfd6e4] hover:text-white">
+          <Link href="/games/connections" className="font-eyebrow text-sm text-cream-dim hover:text-cream">
             ← Back
           </Link>
-          <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-gold uppercase">
+          <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-sky uppercase">
             Sports Game Hub &middot; The Sports Game &middot; {pool === "current" ? "Current Players" : "All-Time"}
           </p>
-          <h1 className="font-display text-5xl font-black italic">Solo Endless</h1>
-          <p className="mt-3 max-w-xl font-eyebrow text-lg text-[#cfd6e4]">
+          <h1 className="font-display text-5xl text-cream uppercase">Solo Endless</h1>
+          <p className="mt-3 max-w-xl font-body text-lg text-cream-dim">
             Name a player. The computer states one true fact about them — a college, a team, or a
             jersey number. You name a different player who matches it. Keep the chain alive as long
             as you can.
@@ -130,36 +130,34 @@ function SoloEndlessGame() {
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 px-6 py-8">
-        <div className="grid grid-cols-2 gap-3.5">
-          <div className="relative border-2 border-ink bg-paper-2 px-4 py-3.5">
-            <span className="absolute top-[-2px] left-[-2px] right-[-2px] h-[5px] bg-red" />
-            <span className="font-eyebrow text-[12.5px] font-semibold tracking-[0.14em] text-ink-faint uppercase">
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 px-6 pb-14">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="rounded-xl border border-sky/25 bg-navy px-4 py-3.5">
+            <span className="font-eyebrow text-[12.5px] font-semibold tracking-[0.14em] text-cream-faint uppercase">
               Current Streak
             </span>
-            <div className="font-display text-[42px] leading-tight font-black italic text-red tabular-nums">
+            <div className="font-display text-[42px] leading-tight text-cream tabular-nums">
               {score}
             </div>
           </div>
-          <div className="relative border-2 border-ink bg-paper-2 px-4 py-3.5">
-            <span className="absolute top-[-2px] left-[-2px] right-[-2px] h-[5px] bg-gold" />
-            <span className="font-eyebrow text-[12.5px] font-semibold tracking-[0.14em] text-ink-faint uppercase">
+          <div className="rounded-xl border border-sky/25 bg-navy px-4 py-3.5">
+            <span className="font-eyebrow text-[12.5px] font-semibold tracking-[0.14em] text-cream-faint uppercase">
               Personal Best
             </span>
-            <div className="font-display text-[42px] leading-tight font-black italic text-gold tabular-nums">
+            <div className="font-display text-[42px] leading-tight text-sky tabular-nums">
               {best}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3.5 border-2 border-ink bg-paper-2 p-5">
+        <div className="foil-border flex flex-col gap-3.5 bg-navy p-5">
           <p
             className={`min-h-6 font-body text-[17px] leading-relaxed ${
               status === "game-over" && lastOutcome === "win"
-                ? "font-eyebrow text-lg font-bold text-green-700"
+                ? "font-eyebrow text-lg font-bold text-emerald-400"
                 : status === "game-over" && lastOutcome === "lose"
-                  ? "font-eyebrow text-lg font-bold text-red"
-                  : "text-ink"
+                  ? "font-eyebrow text-lg font-bold text-[#f3877a]"
+                  : "text-cream"
             }`}
           >
             {message}
@@ -179,7 +177,7 @@ function SoloEndlessGame() {
           {status === "game-over" && (
             <button
               onClick={reset}
-              className="border-2 border-ink bg-navy px-4 py-3 font-eyebrow text-[15px] font-bold tracking-[0.08em] text-white uppercase hover:bg-navy-deep"
+              className="rounded-lg bg-sky px-4 py-3 font-eyebrow text-[15px] font-bold tracking-[0.08em] text-navy-deep uppercase hover:bg-sky-deep hover:text-cream"
             >
               Play again
             </button>
@@ -188,23 +186,23 @@ function SoloEndlessGame() {
 
         {chain.length > 0 && (
           <div>
-            <div className="mt-2 mb-2 border-t-[3px] border-double border-ink pt-3.5 font-eyebrow text-[13px] font-semibold tracking-[0.16em] text-ink-faint uppercase">
+            <div className="mt-2 mb-2 font-eyebrow text-[13px] font-semibold tracking-[0.16em] text-cream-faint uppercase">
               The Chain
             </div>
-            <ol className="flex flex-col divide-y divide-hairline border-t border-hairline">
+            <ol className="flex flex-col gap-2">
               {[...chain].reverse().map((entry, idx) => (
                 <li
                   key={`${entry.player.id}-${chain.length - idx}`}
-                  className="flex items-center gap-3.5 py-3"
+                  className="flex items-center gap-3.5 rounded-lg border border-sky/15 bg-navy px-3.5 py-3"
                 >
-                  <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full bg-ink font-eyebrow text-[13px] font-bold text-paper tabular-nums">
+                  <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full bg-sky font-eyebrow text-[13px] font-bold text-navy-deep tabular-nums">
                     {chain.length - idx}
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span className="font-display text-[16.5px] font-bold">{entry.player.name}</span>
+                    <span className="font-display text-[16.5px] text-cream">{entry.player.name}</span>
                     {entry.link && (
                       <span
-                        className={`inline-flex w-fit rounded-[3px] px-2 py-0.5 font-eyebrow text-[11.5px] font-semibold tracking-wide uppercase ${linkBadgeClass[entry.link.type]}`}
+                        className={`inline-flex w-fit rounded-full px-2.5 py-0.5 font-eyebrow text-[11.5px] font-semibold tracking-wide uppercase ${linkBadgeClass[entry.link.type]}`}
                       >
                         {formatLink(entry.link)}
                       </span>

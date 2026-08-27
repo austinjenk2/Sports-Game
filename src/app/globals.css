@@ -1,39 +1,54 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #eeece2;
-  --paper-2: #ffffff;
-  --ink: #191a1e;
-  --ink-dim: #52545c;
-  --ink-faint: #8b8d93;
-  --navy: #1c2c4f;
-  --navy-deep: #101b34;
-  --navy-tint: #e6eaf1;
-  --red: #c1352a;
-  --gold: #c98a1f;
-  --hairline: #ddd8c8;
+  --navy-deep: #071b30;
+  --navy: #0d2c4d;
+  --navy-tint: #163a63;
+  --cream: #f5efdf;
+  --cream-dim: #b9b29c;
+  --cream-faint: #837d68;
+  --sky: #5bc2e8;
+  --sky-deep: #1f6a94;
+  --sky-tint: rgba(91, 194, 232, 0.14);
+  --crimson: #8c1c13;
+  --crimson-tint: rgba(140, 28, 19, 0.35);
+  --hairline: rgba(91, 194, 232, 0.22);
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-ink: var(--ink);
-  --color-ink-dim: var(--ink-dim);
-  --color-ink-faint: var(--ink-faint);
-  --color-navy: var(--navy);
   --color-navy-deep: var(--navy-deep);
+  --color-navy: var(--navy);
   --color-navy-tint: var(--navy-tint);
-  --color-red: var(--red);
-  --color-gold: var(--gold);
+  --color-cream: var(--cream);
+  --color-cream-dim: var(--cream-dim);
+  --color-cream-faint: var(--cream-faint);
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
+  --color-sky-tint: var(--sky-tint);
+  --color-crimson: var(--crimson);
+  --color-crimson-tint: var(--crimson-tint);
   --color-hairline: var(--hairline);
-  --font-display: var(--font-playfair);
-  --font-eyebrow: var(--font-barlow);
-  --font-body: var(--font-pt-serif);
+  --font-display: var(--font-anton);
+  --font-eyebrow: var(--font-work-sans);
+  --font-body: var(--font-work-sans);
 }
 
 body {
-  background-color: var(--paper);
-  color: var(--ink);
-  background-image: radial-gradient(circle at 1px 1px, rgba(25, 26, 30, 0.05) 1px, transparent 0);
-  background-size: 14px 14px;
+  background-color: var(--navy-deep);
+  color: var(--cream);
+  background-image: radial-gradient(circle at 50% 0%, rgba(91, 194, 232, 0.08), transparent 60%);
+}
+
+.foil-border {
+  position: relative;
+  border-radius: 16px;
+}
+
+.foil-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 18px;
+  background: linear-gradient(155deg, #d7f1fb, #1f6a94 35%, #d7f1fb 60%, #164f70);
+  z-index: -1;
 }

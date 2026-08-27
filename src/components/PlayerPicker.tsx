@@ -51,15 +51,15 @@ export default function PlayerPicker({
         disabled={disabled}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className="w-full border-2 border-ink bg-paper-2 px-4 py-3 font-eyebrow text-base font-medium text-ink outline-none placeholder:font-body placeholder:text-ink-faint placeholder:italic focus:border-navy focus:shadow-[3px_3px_0_var(--navy)] disabled:opacity-50"
+        className="w-full rounded-lg border border-sky/40 bg-navy-tint/40 px-4 py-3 font-eyebrow text-base font-medium text-cream outline-none placeholder:font-body placeholder:text-cream-faint focus:border-sky disabled:opacity-50"
       />
       {query.trim().length > 0 && results.length > 0 && (
-        <ul className="absolute z-10 mt-2 w-full divide-y divide-hairline overflow-hidden border-2 border-ink bg-paper-2 shadow-[5px_5px_0_var(--navy)]">
+        <ul className="absolute z-10 mt-2 w-full divide-y divide-hairline overflow-hidden rounded-lg border border-sky/30 bg-navy shadow-[0_12px_28px_rgba(0,0,0,0.4)]">
           {results.map((p) => (
             <li key={p.id}>
               <button
                 type="button"
-                className="flex w-full items-baseline justify-between gap-3 px-4 py-2.5 text-left font-body text-[15.5px] hover:bg-navy-tint"
+                className="flex w-full items-baseline justify-between gap-3 px-4 py-2.5 text-left font-body text-[15.5px] text-cream hover:bg-sky-tint"
                 onClick={() => {
                   onPick(p);
                   setQuery("");
@@ -67,7 +67,7 @@ export default function PlayerPicker({
               >
                 <span>{p.name}</span>
                 {playerYears(p) && (
-                  <span className="flex-none font-eyebrow text-[12.5px] text-ink-faint tabular-nums">
+                  <span className="flex-none font-eyebrow text-[12.5px] text-cream-faint tabular-nums">
                     {playerYears(p)}
                   </span>
                 )}
@@ -77,7 +77,7 @@ export default function PlayerPicker({
         </ul>
       )}
       {query.trim().length > 0 && results.length === 0 && (
-        <div className="absolute z-10 mt-2 w-full border-2 border-ink bg-paper-2 px-4 py-3 font-body text-sm text-ink-faint italic shadow-[5px_5px_0_var(--navy)]">
+        <div className="absolute z-10 mt-2 w-full rounded-lg border border-sky/30 bg-navy px-4 py-3 font-body text-sm text-cream-faint italic shadow-[0_12px_28px_rgba(0,0,0,0.4)]">
           No matching player in the database.
         </div>
       )}

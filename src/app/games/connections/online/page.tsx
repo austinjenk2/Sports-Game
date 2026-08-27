@@ -191,21 +191,21 @@ function OnlineGame() {
   }
 
   const linkBadgeClass: Record<string, string> = {
-    college: "bg-navy text-white",
-    team: "bg-red text-white",
-    number: "bg-gold text-[#201400]",
+    college: "bg-sky-tint text-sky",
+    team: "bg-crimson-tint text-[#f3b3ab]",
+    number: "bg-navy-tint text-cream",
   };
 
   const header = (
-    <header className="border-b-4 border-gold bg-gradient-to-br from-navy to-navy-deep px-6 py-8 text-white">
+    <header className="px-6 pt-10 pb-6">
       <div className="mx-auto max-w-2xl">
-        <Link href="/games/connections" className="font-eyebrow text-sm text-[#cfd6e4] hover:text-white">
+        <Link href="/games/connections" className="font-eyebrow text-sm text-cream-dim hover:text-cream">
           ← Back
         </Link>
-        <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-gold uppercase">
+        <p className="mt-3 font-eyebrow text-sm font-semibold tracking-[0.2em] text-sky uppercase">
           Sports Game Hub &middot; The Sports Game &middot; {pool === "current" ? "Current Players" : "All-Time"}
         </p>
-        <h1 className="font-display text-5xl font-black italic">1v1 Online</h1>
+        <h1 className="font-display text-5xl text-cream uppercase">1v1 Online</h1>
       </div>
     </header>
   );
@@ -214,8 +214,8 @@ function OnlineGame() {
     return (
       <div className="flex min-h-screen flex-col">
         {header}
-        <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-8">
-          <p className="font-body text-ink-dim">
+        <main className="mx-auto w-full max-w-2xl flex-1 px-6 pb-14">
+          <p className="font-body text-cream-dim">
             Online mode isn&apos;t configured. Set NEXT_PUBLIC_SUPABASE_URL and
             NEXT_PUBLIC_SUPABASE_ANON_KEY to enable it.
           </p>
@@ -228,10 +228,10 @@ function OnlineGame() {
     return (
       <div className="flex min-h-screen flex-col">
         {header}
-        <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-6 py-8">
-          <div className="flex flex-col gap-3.5 border-2 border-ink bg-paper-2 p-5">
+        <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-6 pb-14">
+          <div className="foil-border flex flex-col gap-3.5 bg-navy p-5">
             <input
-              className="border-2 border-ink bg-paper-2 px-4 py-3 font-eyebrow text-base font-medium text-ink outline-none focus:border-navy focus:shadow-[3px_3px_0_var(--navy)]"
+              className="rounded-lg border border-sky/40 bg-navy-tint/40 px-4 py-3 font-eyebrow text-base font-medium text-cream outline-none placeholder:text-cream-faint focus:border-sky"
               placeholder="Your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -239,17 +239,17 @@ function OnlineGame() {
             <button
               onClick={createRoom}
               disabled={!name.trim()}
-              className="border-2 border-ink bg-navy px-4 py-3 font-eyebrow text-[15px] font-bold tracking-[0.08em] text-white uppercase hover:bg-navy-deep disabled:opacity-40"
+              className="rounded-lg bg-sky px-4 py-3 font-eyebrow text-[15px] font-bold tracking-[0.08em] text-navy-deep uppercase hover:bg-sky-deep hover:text-cream disabled:opacity-40"
             >
               Create a room
             </button>
-            <div className="flex items-center gap-2 font-eyebrow text-sm text-ink-faint uppercase">
+            <div className="flex items-center gap-2 font-eyebrow text-sm text-cream-faint uppercase">
               <div className="h-px flex-1 bg-hairline" />
               or
               <div className="h-px flex-1 bg-hairline" />
             </div>
             <input
-              className="border-2 border-ink bg-paper-2 px-4 py-3 font-eyebrow text-base font-medium tracking-widest text-ink uppercase outline-none focus:border-navy focus:shadow-[3px_3px_0_var(--navy)]"
+              className="rounded-lg border border-sky/40 bg-navy-tint/40 px-4 py-3 font-eyebrow text-base font-medium tracking-widest text-cream uppercase outline-none placeholder:text-cream-faint placeholder:normal-case focus:border-sky"
               placeholder="Room code"
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value)}
@@ -257,11 +257,11 @@ function OnlineGame() {
             <button
               onClick={joinRoom}
               disabled={!name.trim() || !joinCode.trim()}
-              className="border-2 border-ink bg-paper-2 px-4 py-3 font-eyebrow text-[15px] font-bold tracking-[0.08em] text-navy uppercase hover:bg-navy-tint disabled:opacity-40"
+              className="rounded-lg border border-sky/40 bg-transparent px-4 py-3 font-eyebrow text-[15px] font-bold tracking-[0.08em] text-sky uppercase hover:bg-sky-tint disabled:opacity-40"
             >
               Join a room
             </button>
-            {error && <p className="font-body text-sm text-red">{error}</p>}
+            {error && <p className="font-body text-sm text-[#f3877a]">{error}</p>}
           </div>
         </main>
       </div>
@@ -274,24 +274,23 @@ function OnlineGame() {
   return (
     <div className="flex min-h-screen flex-col">
       {header}
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 px-6 py-8">
-        <div className="relative border-2 border-ink bg-paper-2 px-4 py-3.5">
-          <span className="absolute top-[-2px] left-[-2px] right-[-2px] h-[5px] bg-gold" />
-          <p className="font-body text-ink">
-            Room code: <strong className="font-eyebrow tracking-widest">{room.code}</strong> —
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 px-6 pb-14">
+        <div className="rounded-xl border border-sky/25 bg-navy px-4 py-3.5">
+          <p className="font-body text-cream">
+            Room code: <strong className="font-eyebrow tracking-widest text-sky">{room.code}</strong> —
             share this with your friend.
           </p>
-          <p className="mt-1 font-eyebrow text-sm text-ink-dim">
+          <p className="mt-1 font-eyebrow text-sm text-cream-dim">
             {room.host_name} (host) vs. {room.guest_name ?? "waiting for player..."}
           </p>
         </div>
 
         {waitingForGuest && (
-          <p className="font-body text-ink-dim italic">Waiting for a second player to join...</p>
+          <p className="font-body text-cream-dim italic">Waiting for a second player to join...</p>
         )}
 
         {room.status === "finished" && (
-          <p className="font-eyebrow text-lg font-bold text-red">
+          <p className="font-eyebrow text-lg font-bold text-[#f3877a]">
             {room.loser === role
               ? `You couldn't continue the chain. You lose!`
               : `Your opponent couldn't continue the chain. You win!`}
@@ -299,8 +298,8 @@ function OnlineGame() {
         )}
 
         {room.status === "active" && (
-          <div className="flex flex-col gap-3.5 border-2 border-ink bg-paper-2 p-5">
-            <p className="font-body text-[17px] text-ink">
+          <div className="foil-border flex flex-col gap-3.5 bg-navy p-5">
+            <p className="font-body text-[17px] text-cream">
               {isMyTurn
                 ? lastPlayer
                   ? `Your turn — link to ${lastPlayer.name}.`
@@ -318,26 +317,26 @@ function OnlineGame() {
           </div>
         )}
 
-        {error && <p className="font-body text-sm text-red">{error}</p>}
+        {error && <p className="font-body text-sm text-[#f3877a]">{error}</p>}
 
         {moves.length > 0 && (
-          <ol className="flex flex-col divide-y divide-hairline border-t border-hairline">
+          <ol className="flex flex-col gap-2">
             {[...moves].reverse().map((m) => (
-              <li key={m.id} className="flex items-center gap-3.5 py-3">
-                <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full bg-ink font-eyebrow text-[13px] font-bold text-paper tabular-nums">
+              <li key={m.id} className="flex items-center gap-3.5 rounded-lg border border-sky/15 bg-navy px-3.5 py-3">
+                <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full bg-sky font-eyebrow text-[13px] font-bold text-navy-deep tabular-nums">
                   {m.seq + 1}
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="font-display text-[16.5px] font-bold">{m.player_name}</span>
+                  <span className="font-display text-[16.5px] text-cream">{m.player_name}</span>
                   {m.link_type && m.link_value && (
                     <span
-                      className={`inline-flex w-fit rounded-[3px] px-2 py-0.5 font-eyebrow text-[11.5px] font-semibold tracking-wide uppercase ${linkBadgeClass[m.link_type]}`}
+                      className={`inline-flex w-fit rounded-full px-2.5 py-0.5 font-eyebrow text-[11.5px] font-semibold tracking-wide uppercase ${linkBadgeClass[m.link_type]}`}
                     >
                       {formatLink({ type: m.link_type as "college" | "team" | "number", value: m.link_value })}
                     </span>
                   )}
                 </span>
-                <span className="font-eyebrow text-xs tracking-wide text-ink-faint uppercase">
+                <span className="font-eyebrow text-xs tracking-wide text-cream-faint uppercase">
                   {m.by === role ? "You" : "Opponent"}
                 </span>
               </li>
